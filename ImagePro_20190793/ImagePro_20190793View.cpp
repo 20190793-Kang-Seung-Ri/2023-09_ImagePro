@@ -150,7 +150,7 @@ void CImagePro20190793View::OnDraw(CDC* pDC) {
 
 		}
 	}
-		}
+}
 
 void CImagePro20190793View::OnInitialUpdate() {
 	CScrollView::OnInitialUpdate();
