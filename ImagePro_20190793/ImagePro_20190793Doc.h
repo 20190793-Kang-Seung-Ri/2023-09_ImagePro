@@ -63,4 +63,6 @@ public:
 	
 	void LoadImageFile(CArchive& ar);
 	void LoadSecondImageFile(CArchive& ar);
+
+	unsigned char** morphedImg[10];
 };

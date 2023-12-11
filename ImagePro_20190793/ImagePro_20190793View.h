@@ -81,6 +81,7 @@ public:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnAviPrint();
 	void LoadAviFile(CDC* pDC);
+	afx_msg void OnGeometryMorping();
 };
 
 #ifndef _DEBUG  // ImagePro_20190793View.cpp의 디버그 버전

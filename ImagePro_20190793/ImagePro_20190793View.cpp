@@ -10,6 +10,7 @@
 #include "ImagePro_20190793.h"
 #endif
 
+#define MORPHING 8
 #include "ImagePro_20190793Doc.h"
 #include "ImagePro_20190793View.h"
 #include <Vfw.h>
@@ -63,6 +64,7 @@ BEGIN_MESSAGE_MAP(CImagePro20190793View, CScrollView)
 	ON_WM_LBUTTONUP()
 	ON_WM_LBUTTONDOWN()
 	ON_COMMAND(ID_AVI_PRINT, &CImagePro20190793View::OnAviPrint)
+	ON_COMMAND(ID_GEOMETRY_MORPING, &CImagePro20190793View::OnGeometryMorping)
 END_MESSAGE_MAP()
 
 // CImagePro20190793View 생성/소멸
@@ -104,8 +106,7 @@ void CImagePro20190793View::OnDraw(CDC* pDC) {
 			for (y = 0; y < pDoc->imageHeight; y++)
 				for (x = 0; x < pDoc->imageWidth; x++)
 					pDC->SetPixel(x, y, RGB(pDoc->inputImg[y][x], pDoc->inputImg[y][x], pDoc->inputImg[y][x]));
-		}
-		else {
+		} else {
 			for (y = 0; y < pDoc->imageHeight; y++)
 				for (x = 0; x < pDoc->imageWidth; x++)
 					pDC->SetPixel(x, y, RGB(pDoc->inputImg[y][3 * x + 0], pDoc->inputImg[y][3 * x + 1], pDoc->inputImg[y][3 * x + 2]));
@@ -117,8 +118,7 @@ void CImagePro20190793View::OnDraw(CDC* pDC) {
 			for (y = 0; y < pDoc->imageHeight; y++)
 				for (x = 0; x < pDoc->imageWidth; x++)
 					pDC->SetPixel(pDoc->imageWidth + 20 + x, y, RGB(pDoc->resultImg[y][x], pDoc->resultImg[y][x], pDoc->resultImg[y][x]));
-		}
-		else {
+		} else {
 			for (y = 0; y < pDoc->imageHeight; y++)
 				for (x = 0; x < pDoc->imageWidth; x++)
 					pDC->SetPixel(pDoc->imageWidth + 20 + x, y, RGB(pDoc->resultImg[y][3 * x + 0], pDoc->resultImg[y][3 * x + 1], pDoc->resultImg[y][3 * x + 2]));
@@ -131,8 +131,7 @@ void CImagePro20190793View::OnDraw(CDC* pDC) {
 			for (y = 0; y < pDoc->imageHeight; y++)
 				for (x = 0; x < pDoc->imageWidth; x++)
 					pDC->SetPixel((pDoc->imageWidth + 20) * 2 + x, y, RGB(pDoc->inputImg2[y][x], pDoc->inputImg2[y][x], pDoc->inputImg2[y][x]));
-		}
-		else {
+		} else {
 			for (y = 0; y < pDoc->imageHeight; y++)
 				for (x = 0; x < pDoc->imageWidth; x++)
 					pDC->SetPixel((pDoc->imageWidth + 20) * 2 + x, y, RGB(pDoc->inputImg2[y][3 * x + 0], pDoc->inputImg2[y][3 * x + 1], pDoc->inputImg2[y][3 * x + 2]));
@@ -144,11 +143,25 @@ void CImagePro20190793View::OnDraw(CDC* pDC) {
 			for (y = 0; y < pDoc->gImageHeight; y++)
 				for (x = 0; x < pDoc->gImageWidth; x++)
 					pDC->SetPixel(x, pDoc->imageHeight + 20 + y, RGB(pDoc->gResultImg[y][x], pDoc->gResultImg[y][x], pDoc->gResultImg[y][x]));
-		}
-		else {
+		} else {
 			for (y = 0; y < pDoc->gImageHeight; y++)
 				for (x = 0; x < pDoc->gImageWidth; x++)
 					pDC->SetPixel(x, pDoc->imageHeight + 20 + y, RGB(pDoc->gResultImg[y][3 * x + 0], pDoc->gResultImg[y][3 * x + 1], pDoc->gResultImg[y][3 * x + 2]));
+
+		}
+	}
+
+	if (pDoc->morphedImg != NULL) {
+		if (pDoc->depth == 1) {
+			for (int i = 0; i < 10; i++)
+				for (y = 0; y < pDoc->imageHeight; y++)
+					for (x = 0; x < pDoc->imageWidth; x++)
+						pDC->SetPixel(pDoc->imageWidth + 20 + x, y, RGB(pDoc->morphedImg[i][y][x], pDoc->morphedImg[i][y][x], pDoc->morphedImg[i][y][x]));
+		} else {
+			for (int i = 0; i < 10; i++)
+				for (y = 0; y < pDoc->imageHeight; y++)
+					for (x = 0; x < pDoc->imageWidth; x++)
+						pDC->SetPixel(pDoc->imageWidth + 20 + x, y, RGB(pDoc->morphedImg[i][y][3 * x + 0], pDoc->morphedImg[i][y][3 * x + 1], pDoc->morphedImg[i][y][3 * x + 2]));
 
 		}
 	}
@@ -219,8 +232,7 @@ void CImagePro20190793View::OnPixelAdd() {
 				if (value > 255)	value = 255;
 				if (value < 0)	value = 0;
 				pDoc->resultImg[y][x] = value;
-			}
-			else {
+			} else {
 				value = pDoc->inputImg[y][3 * x + 0] + 100;
 				if (value > 255)	value = 255;
 				if (value < 0)	value = 0;
@@ -257,8 +269,7 @@ void CImagePro20190793View::OnPixelSub() {
 				if (value > 255)	value = 255;
 				if (value < 0)	value = 0;
 				pDoc->resultImg[y][x] = value;
-			}
-			else {
+			} else {
 				value = pDoc->inputImg[y][3 * x + 0] - 100;
 				if (value > 255)	value = 255;
 				if (value < 0)	value = 0;
@@ -295,8 +306,7 @@ void CImagePro20190793View::OnPixelMul() {
 				if (value > 255)	value = 255;
 				else if (value < 0)	value = 0;
 				pDoc->resultImg[y][x] = value;
-			}
-			else {
+			} else {
 				value = pDoc->inputImg[y][3 * x + 0] * 1.5;
 				if (value > 255)	value = 255;
 				else if (value < 0)	value = 0;
@@ -333,8 +343,7 @@ void CImagePro20190793View::OnPixelDiv() {
 				if (value > 255)	value = 255;
 				else if (value < 0)	value = 0;
 				pDoc->resultImg[y][x] = value;
-			}
-			else {
+			} else {
 				value = pDoc->inputImg[y][3 * x + 0] / 1.5;
 				if (value > 255)	value = 255;
 				else if (value < 0)	value = 0;
@@ -466,14 +475,12 @@ void CImagePro20190793View::OnPixelTwoImageAdd() {
 
 					if (value > 255) {
 						value = 255;
-					}
-					else if (value < 0) {
+					} else if (value < 0) {
 						value = 0;
 					}
 
 					pDoc->resultImg[y][x] = (unsigned char) value;
-				}
-				else {
+				} else {
 					rvalue = 0.5 * pDoc->inputImg[y][3 * x + 0] + 0.5 * pDoc->inputImg2[y][3 * x + 0];
 					gvalue = 0.5 * pDoc->inputImg[y][3 * x + 1] + 0.5 * pDoc->inputImg2[y][3 * x + 1];
 					bvalue = 0.5 * pDoc->inputImg[y][3 * x + 2] + 0.5 * pDoc->inputImg2[y][3 * x + 2];
@@ -520,14 +527,12 @@ void CImagePro20190793View::OnPixelTwoImageSub() {
 
 					if (value > 255) {
 						value = 255;
-					}
-					else if (value < 0) {
+					} else if (value < 0) {
 						value = 0;
 					}
 
 					pDoc->resultImg[y][x] = (unsigned char) value;
-				}
-				else {
+				} else {
 					rvalue = pDoc->inputImg[y][3 * x + 0] - pDoc->inputImg2[y][3 * x + 0];
 					gvalue = pDoc->inputImg[y][3 * x + 1] - pDoc->inputImg2[y][3 * x + 1];
 					bvalue = pDoc->inputImg[y][3 * x + 2] - pDoc->inputImg2[y][3 * x + 2];
@@ -582,8 +587,7 @@ void CImagePro20190793View::convolve(unsigned char** inimg, unsigned char** outi
 				if (sum > 255)	sum = 255;
 				else if (sum < 0)	sum = 0;
 				outimg[y][x] = sum;
-			}
-			else {
+			} else {
 				rsum = 0; gsum = 0; bsum = 0;
 				for (j = 0; j < 3; j++)
 					for (i = 0; i < 3; i++) {
@@ -668,8 +672,7 @@ void CImagePro20190793View::OnRegionPrewitt() {
 				if (sum > 255)	sum = 255;
 				else if (sum < 0)	sum = 0;
 				pDoc->resultImg[y][x] = sum;
-			}
-			else {
+			} else {
 				rsum = sqrt((Er[y][3 * x + 0] - 128) * (Er[y][3 * x + 0] - 128) + (Ec[y][3 * x + 0] - 128) * (Ec[y][3 * x + 0] - 128));
 				if (rsum > 255)		rsum = 255;
 				else if (rsum < 0)	rsum = 0;
@@ -736,8 +739,7 @@ void CImagePro20190793View::OnRegionRoberts() {
 				if (sum > 255)	sum = 255;
 				else if (sum < 0)	sum = 0;
 				pDoc->resultImg[y][x] = sum;
-			}
-			else {
+			} else {
 				rsum = sqrt((Er[y][3 * x + 0] - 128) * (Er[y][3 * x + 0] - 128) + (Ec[y][3 * x + 0] - 128) * (Ec[y][3 * x + 0] - 128));
 				if (rsum > 255)		rsum = 255;
 				else if (rsum < 0)	rsum = 0;
@@ -809,8 +811,7 @@ void CImagePro20190793View::OnRegionSobel() {
 				//else                sum = 0;
 
 				pDoc->resultImg[y][x] = sum;
-			}
-			else {
+			} else {
 				rsum = sqrt((Er[y][3 * x + 0] - 128) * (Er[y][3 * x + 0] - 128) + (Ec[y][3 * x + 0] - 128) * (Ec[y][3 * x + 0] - 128));
 				if (rsum > 255)		rsum = 255;
 				else if (rsum < 0)	rsum = 0;
@@ -870,8 +871,7 @@ void CImagePro20190793View::OnRegionAverageFiltering() {
 				else if (sum < 0)		sum = 0;
 
 				pDoc->resultImg[y][x] = sum;
-			}
-			else {
+			} else {
 				rsum = 0;	gsum = 0;	bsum = 0;
 				for (j = 0; j < 5; j++)
 					for (i = 0; i < 5; i++) {
@@ -929,8 +929,7 @@ void CImagePro20190793View::OnRegionMedianFiltering() {
 					}
 
 				pDoc->resultImg[y][x] = n[4];
-			}
-			else {
+			} else {
 				n[0] = pDoc->inputImg[y - 1][3 * (x - 1) + 0];
 				n[1] = pDoc->inputImg[y - 1][3 * (x + 0) + 0];
 				n[2] = pDoc->inputImg[y - 1][3 * (x + 1) + 0];
@@ -1037,14 +1036,12 @@ void CImagePro20190793View::OnMopologyGrayToBinary() {
 					pDoc->inputImg[y][x] = 255;
 				else
 					pDoc->inputImg[y][x] = 0;
-			}
-			else {
+			} else {
 				if (pDoc->inputImg[y][3 * x + 0] > th) {
 					pDoc->inputImg[y][3 * x + 0] = 255;
 					pDoc->inputImg[y][3 * x + 1] = 255;
 					pDoc->inputImg[y][3 * x + 2] = 255;
-				}
-				else {
+				} else {
 					pDoc->inputImg[y][3 * x + 0] = 0;
 					pDoc->inputImg[y][3 * x + 1] = 0;
 					pDoc->inputImg[y][3 * x + 2] = 0;
@@ -1072,8 +1069,7 @@ void CImagePro20190793View::OnMopologyErosion() {
 							min = pDoc->inputImg[y + j - 1][x + i - 1];
 					}
 				pDoc->resultImg[y][x] = min;
-			}
-			else {
+			} else {
 				min = 255;
 				for (int j = 0; j < 3; j++)
 					for (int i = 0; i < 3; i++) {
@@ -1120,8 +1116,7 @@ void CImagePro20190793View::OnMopologyDilation() {
 							max = pDoc->inputImg[y + j - 1][x + i - 1];
 					}
 				pDoc->resultImg[y][x] = max;
-			}
-			else {
+			} else {
 				max = 0;
 				for (int j = 0; j < 3; j++)
 					for (int i = 0; i < 3; i++) {
@@ -1309,8 +1304,7 @@ void CImagePro20190793View::OnGeometryZoominBilinearInterpolation() {
 				E = (1 - alpha) * pDoc->inputImg[Ay][Ax] + alpha * pDoc->inputImg[By][Bx];
 				F = (1 - alpha) * pDoc->inputImg[Cy][Cx] + alpha * pDoc->inputImg[Dy][Dx];
 				pDoc->gResultImg[y][x] = (1 - beta) * E + beta * F;
-			}
-			else {
+			} else {
 				E = (1 - alpha) * pDoc->inputImg[Ay][3 * Ax + 0] + alpha * pDoc->inputImg[By][3 * Bx + 0];
 				F = (1 - alpha) * pDoc->inputImg[Cy][3 * Cx + 0] + alpha * pDoc->inputImg[Dy][3 * Dx + 0];
 				pDoc->gResultImg[y][3 * x + 0] = (1 - beta) * E + beta * F;
@@ -1480,15 +1474,13 @@ void CImagePro20190793View::OnGeometryRotation() {
 					pDoc->gResultImg[y + ydiff][x + xdiff] = 255;
 				else
 					pDoc->gResultImg[y + ydiff][x + xdiff] = pDoc->inputImg[y_source][x_source];
-			}
-			else {
+			} else {
 				if (x_source<0 || x_source>pDoc->imageWidth - 1 ||
 					y_source<0 || y_source>pDoc->imageHeight - 1) {
 					pDoc->gResultImg[y + ydiff][3 * (x + xdiff) + 0] = 255;
 					pDoc->gResultImg[y + ydiff][3 * (x + xdiff) + 1] = 255;
 					pDoc->gResultImg[y + ydiff][3 * (x + xdiff) + 2] = 255;
-				}
-				else {
+				} else {
 					pDoc->gResultImg[y + ydiff][3 * (x + xdiff) + 0] = pDoc->inputImg[y_source][3 * (x_source) +0];
 					pDoc->gResultImg[y + ydiff][3 * (x + xdiff) + 1] = pDoc->inputImg[y_source][3 * (x_source) +1];
 					pDoc->gResultImg[y + ydiff][3 * (x + xdiff) + 2] = pDoc->inputImg[y_source][3 * (x_source) +2];
@@ -1510,8 +1502,7 @@ void CImagePro20190793View::OnGeometryMirror() {
 		for (x = 0; x < pDoc->imageWidth; x++) {
 			if (pDoc->depth == 1) {
 				pDoc->resultImg[y][pDoc->imageWidth - 1 - x] = pDoc->inputImg[y][x];
-			}
-			else {
+			} else {
 				pDoc->resultImg[y][3 * (pDoc->imageWidth - 1 - x) + 0] = pDoc->inputImg[y][3 * x + 0];
 				pDoc->resultImg[y][3 * (pDoc->imageWidth - 1 - x) + 1] = pDoc->inputImg[y][3 * x + 1];
 				pDoc->resultImg[y][3 * (pDoc->imageWidth - 1 - x) + 2] = pDoc->inputImg[y][3 * x + 2];
@@ -1532,8 +1523,7 @@ void CImagePro20190793View::OnGeometryFlip() {
 		for (x = 0; x < pDoc->imageWidth; x++) {
 			if (pDoc->depth == 1) {
 				pDoc->resultImg[pDoc->imageHeight - 1 - y][x] = pDoc->inputImg[y][x];
-			}
-			else {
+			} else {
 				pDoc->resultImg[pDoc->imageHeight - 1 - y][3 * (x) +0] = pDoc->inputImg[y][3 * x + 0];
 				pDoc->resultImg[pDoc->imageHeight - 1 - y][3 * (x) +1] = pDoc->inputImg[y][3 * x + 1];
 				pDoc->resultImg[pDoc->imageHeight - 1 - y][3 * (x) +2] = pDoc->inputImg[y][3 * x + 2];
@@ -1644,8 +1634,7 @@ void CImagePro20190793View::OnGeometryWarping() {
 
 			if (pDoc->depth == 1) {
 				pDoc->resultImg[y][x] = pDoc->inputImg[source_y][source_x];
-			}
-			else {
+			} else {
 				pDoc->resultImg[y][3 * x + 0] = pDoc->inputImg[source_y][3 * source_x + 0];
 				pDoc->resultImg[y][3 * x + 1] = pDoc->inputImg[source_y][3 * source_x + 1];
 				pDoc->resultImg[y][3 * x + 2] = pDoc->inputImg[source_y][3 * source_x + 2];
@@ -1735,12 +1724,10 @@ void CImagePro20190793View::LoadAviFile(CDC* pDC) {
 	AVIFileOpen(&pavi, AVIFileName, OF_READ | OF_SHARE_DENY_NONE, NULL);
 	AVIFileInfo(pavi, &fi, sizeof(AVIFILEINFO));
 
-	for (stm = 0; stm < fi.dwStreams; stm++)
-	{
+	for (stm = 0; stm < fi.dwStreams; stm++) {
 		AVIFileGetStream(pavi, &pstm, 0, stm);
 		AVIStreamInfo(pstm, &si, sizeof(si));
-		if (si.fccType == streamtypeVIDEO)
-		{
+		if (si.fccType == streamtypeVIDEO) {
 			pfrm = AVIStreamGetFrameOpen(pstm, NULL);
 			for (frame = 0; frame < 100; frame++)		//si.dwLength
 			{
@@ -1763,6 +1750,180 @@ void CImagePro20190793View::LoadAviFile(CDC* pDC) {
 					0, 0, 0, fi.dwWidth,
 					image, (BITMAPINFO*) pbmpih, DIB_RGB_COLORS);
 				Sleep(30);
+			}
+		}
+	}
+}
+
+
+#define NUM_FRAMES 10 
+
+
+void CImagePro20190793View::OnGeometryMorping() {
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CImagePro20190793Doc* pDoc = GetDocument();
+
+	CFileDialog dlg(true);
+	CFile file;
+
+	control_line source_lines[23] = {{116,7,207,5},{34,109,90,21},{55,249,30,128},{118,320,65,261},
+									 {123,321,171,321},{179,319,240,264},{247,251,282,135},{281,114,228,8},
+									 {78,106,123,109},{187,115,235,114},{72,142,99,128},{74,150,122,154},
+									 {108,127,123,146},{182,152,213,132},{183,159,229,157},{219,131,240,154},
+									 {80,246,117,212},{127,222,146,223},{154,227,174,221},{228,252,183,213},
+									 {114,255,186,257},{109,258,143,277},{152,278,190,262}};
+
+	control_line dest_lines[23] = {{120,8,200,6},{12,93,96,16},{74,271,16,110},{126,336,96,290},
+									{142,337,181,335},{192,335,232,280},{244,259,288,108},{285,92,212,13},
+									{96,135,136,118},{194,119,223,125},{105,145,124,134},{110,146,138,151},
+									{131,133,139,146},{188,146,198,134},{189,153,218,146},{204,133,221,140},
+									{91,268,122,202},{149,206,159,209},{170,209,181,204},{235,265,208,199},
+									{121,280,205,284},{112,286,160,301},{166,301,214,287}};
+
+	double u;       // 수직 교차점의 위치   
+	double h;       // 제어선으로부터 픽셀의 수직 변위 
+	double d;       // 제어선과 픽셀 사이의 거리 
+	double tx, ty;   // 결과영상 픽셀에 대응되는 입력 영상 픽셀 사이의 변위의 합  
+	double xp, yp;  // 각 제어선에 대해 계산된 입력 영상의 대응되는 픽셀 위치     
+	double weight;     // 각 제어선의 가중치       
+	double totalWeight; // 가중치의 합          
+	double a = 0.001, b = 2.0, p = 0.75;
+	unsigned char** warpedImg;
+	unsigned char** warpedImg2;
+	int frame;
+	double fweight;
+	control_line warp_lines[23];
+	double tx2, ty2, xp2, yp2;
+	int dest_x1, dest_y1, dest_x2, dest_y2, source_x2, source_y2;
+	int x1, x2, y1, y2, src_x1, src_y1, src_x2, src_y2;
+	double src_line_length, dest_line_length;
+	int i, j;
+	int num_lines = 23;         // 제어선의 수 
+	int line, x, y, source_x, source_y, last_row, last_col;
+
+	file.Open(dlg.GetPathName(), CFile::modeRead);
+	CArchive ar(&file, CArchive::load);
+	pDoc->LoadSecondImageFile(ar);
+	file.Close();
+
+	warpedImg = (unsigned char**) malloc(pDoc->imageHeight * sizeof(unsigned char*));
+	for (i = 0; i < pDoc->imageHeight; i++) {
+		warpedImg[i] = (unsigned char*) malloc(pDoc->imageWidth * pDoc->depth);
+	}
+
+	warpedImg2 = (unsigned char**) malloc(pDoc->imageHeight * sizeof(unsigned char*));
+	for (i = 0; i < pDoc->imageHeight; i++) {
+		warpedImg2[i] = (unsigned char*) malloc(pDoc->imageWidth * pDoc->depth);
+	}
+
+	for (i = 0; i < NUM_FRAMES; i++) {
+		pDoc->morphedImg[i] = (unsigned char**) malloc(pDoc->imageHeight * sizeof(unsigned char*));
+		for (j = 0; j < pDoc->imageHeight; j++) {
+			pDoc->morphedImg[i][j] = (unsigned char*) malloc(pDoc->imageWidth * pDoc->depth);
+		}
+	}
+
+	last_row = pDoc->imageHeight - 1;
+	last_col = pDoc->imageWidth - 1;
+
+	for (frame = 1; frame <= NUM_FRAMES; frame++) {
+		// 중간 프레임에 대한 가중치 계산 
+		fweight = (double) (frame) / NUM_FRAMES;
+
+		// 중간 프레임에 대한 제어선 계산 
+		for (line = 0; line < num_lines; line++) {
+			warp_lines[line].Px = (int) (source_lines[line].Px + (dest_lines[line].Px - source_lines[line].Px) * fweight);
+			warp_lines[line].Py = (int) (source_lines[line].Py + (dest_lines[line].Py - source_lines[line].Py) * fweight);
+			warp_lines[line].Qx = (int) (source_lines[line].Qx + (dest_lines[line].Qx - source_lines[line].Qx) * fweight);
+			warp_lines[line].Qy = (int) (source_lines[line].Qy + (dest_lines[line].Qy - source_lines[line].Qy) * fweight);
+		}
+
+		for (y = 0; y < pDoc->imageHeight; y++) {
+			for (x = 0; x < pDoc->imageWidth; x++) {
+				totalWeight = 0.0;
+				tx = 0.0;
+				ty = 0.0;
+				tx2 = 0.0;
+				ty2 = 0.0;
+				// 각 제어선에 대하여 
+				for (line = 0; line < num_lines; line++) {
+					x1 = warp_lines[line].Px;
+					y1 = warp_lines[line].Py;
+					x2 = warp_lines[line].Qx;
+					y2 = warp_lines[line].Qy;
+					dest_line_length = sqrt((double) (x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+
+					u = (double) ((x - x1) * (x2 - x1) + (y - y1) * (y2 - y1)) / (double) ((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
+					h = (double) ((y - y1) * (x2 - x1) - (x - x1) * (y2 - y1)) / dest_line_length;
+
+					// 제어선과 픽셀 사이의 거리 계산 
+					if (u < 0) d = sqrt((double) (x - x1) * (x - x1) + (y - y1) * (y - y1));
+					else if (u > 1) d = sqrt((double) (x - x2) * (x - x2) + (y - y2) * (y - y2));
+					else d = fabs(h);
+
+					src_x1 = source_lines[line].Px;
+					src_y1 = source_lines[line].Py;
+					src_x2 = source_lines[line].Qx;
+					src_y2 = source_lines[line].Qy;
+					src_line_length = sqrt((double) (src_x2 - src_x1) * (src_x2 - src_x1) + (src_y2 - src_y1) * (src_y2 - src_y1));
+
+					dest_x1 = dest_lines[line].Px;
+					dest_y1 = dest_lines[line].Py;
+					dest_x2 = dest_lines[line].Qx;
+					dest_y2 = dest_lines[line].Qy;
+					dest_line_length = sqrt((double) (dest_x2 - dest_x1) * (dest_x2 - dest_x1) + (dest_y2 - dest_y1) * (dest_y2 - dest_y1));
+
+					// 입력 영상 1에서의 대응 픽셀 위치 계산 
+					xp = src_x1 + u * (src_x2 - src_x1) - h * (src_y2 - src_y1) / src_line_length;
+					yp = src_y1 + u * (src_y2 - src_y1) + h * (src_x2 - src_x1) / src_line_length;
+
+					// 입력 영상 2에서의 대응 픽셀 위치 계산 
+					xp2 = dest_x1 + u * (dest_x2 - dest_x1) - h * (dest_y2 - dest_y1) / dest_line_length;
+					yp2 = dest_y1 + u * (dest_y2 - dest_y1) + h * (dest_x2 - dest_x1) / dest_line_length;
+
+					weight = pow((pow((double) (dest_line_length), p) / (a + d)), b);
+
+					// 입력 영상 1의 대응 픽셀과의 변위 계산 
+					tx += (xp - x) * weight;
+					ty += (yp - y) * weight;
+
+					// 입력 영상 2의 대응 픽셀과의 변위 계산 
+					tx2 += (xp2 - x) * weight;
+					ty2 += (yp2 - y) * weight;
+
+					totalWeight += weight;
+				}
+
+				source_x = x + (int) (tx / totalWeight + 0.5);
+				source_y = y + (int) (ty / totalWeight + 0.5);
+
+				// 입력 영상 2의 대응 픽셀 위치 계산 
+				source_x2 = x + (int) (tx2 / totalWeight + 0.5);
+				source_y2 = y + (int) (ty2 / totalWeight + 0.5);
+
+				// 영상의 경계를 벗어나는지 검사 
+				if (source_x < 0) source_x = 0;
+				if (source_x > last_col) source_x = last_col;
+				if (source_y < 0) source_y = 0;
+				if (source_y > last_row) source_y = last_row;
+
+				if (source_x2 < 0) source_x2 = 0;
+				if (source_x2 > last_col) source_x2 = last_col;
+				if (source_y2 < 0) source_y2 = 0;
+				if (source_y2 > last_row) source_y2 = last_row;
+
+				warpedImg[y][x] = pDoc->inputImg[source_y][source_x];
+				warpedImg2[y][x] = pDoc->inputImg2[source_y2][source_x2];
+			}
+		}
+
+		// 모핑 결과 합병 
+		for (y = 0; y < pDoc->imageHeight; y++) {
+			for (x = 0; x < pDoc->imageWidth; x++) {
+				int val = (int) ((1.0 - fweight) * warpedImg[y][x] + fweight * warpedImg2[y][x]);
+				if (val < 0) val = 0;
+				if (val > 255) val = 255;
+				pDoc->morphedImg[frame - 1][y][x] = val;
 			}
 		}
 	}
