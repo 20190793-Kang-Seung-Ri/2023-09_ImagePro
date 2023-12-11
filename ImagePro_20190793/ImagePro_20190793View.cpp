@@ -1747,12 +1747,3 @@ void CImagePro20190793View::LoadAviFile(CDC* pDC) {
 void CImagePro20190793View::OnGeometryMorping() {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
 }
-
-
-#define NUM_FRAMES 10 
-
-
-void CImagePro20190793View::OnGeometryMorping() {
-	// TODO: 여기에 명령 처리기 코드를 추가합니다.
-	
-}
