@@ -63,5 +63,4 @@ public:
 	
 	void LoadImageFile(CArchive& ar);
 	void LoadSecondImageFile(CArchive& ar);
-
 };

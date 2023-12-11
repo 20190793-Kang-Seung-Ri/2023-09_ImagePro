@@ -150,22 +150,7 @@ void CImagePro20190793View::OnDraw(CDC* pDC) {
 
 		}
 	}
-
-	if (pDoc->morphedImg != NULL) {
-		if (pDoc->depth == 1) {
-			for (int i = 0; i < 10; i++)
-				for (y = 0; y < pDoc->imageHeight; y++)
-					for (x = 0; x < pDoc->imageWidth; x++)
-						pDC->SetPixel(pDoc->imageWidth + 20 + x, y, RGB(pDoc->morphedImg[i][y][x], pDoc->morphedImg[i][y][x], pDoc->morphedImg[i][y][x]));
-		} else {
-			for (int i = 0; i < 10; i++)
-				for (y = 0; y < pDoc->imageHeight; y++)
-					for (x = 0; x < pDoc->imageWidth; x++)
-						pDC->SetPixel(pDoc->imageWidth + 20 + x, y, RGB(pDoc->morphedImg[i][y][3 * x + 0], pDoc->morphedImg[i][y][3 * x + 1], pDoc->morphedImg[i][y][3 * x + 2]));
-
 		}
-	}
-}
 
 void CImagePro20190793View::OnInitialUpdate() {
 	CScrollView::OnInitialUpdate();

@@ -36,8 +36,6 @@ CImagePro20190793Doc::CImagePro20190793Doc() noexcept {
 	resultImg = NULL;
 
 	gResultImg = NULL;
-
-	morphedImg[10] = NULL;
 }
 
 CImagePro20190793Doc::~CImagePro20190793Doc() {
