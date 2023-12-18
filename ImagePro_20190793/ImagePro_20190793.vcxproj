@@ -76,6 +76,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>C:\Users\irunn\source\repos\opencv\build\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\irunn\source\repos\opencv\build\x64\vc16\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
@@ -85,6 +87,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>C:\Users\irunn\source\repos\opencv\build\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\irunn\source\repos\opencv\build\x64\vc16\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -93,12 +97,14 @@
       <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>_WINDOWS;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>Vfw32.lib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
       <ConformanceMode>false</ConformanceMode>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <AdditionalDependencies>Vfw32.lib</AdditionalDependencies>
+      <AdditionalDependencies>Vfw32.lib;opencv_world480d.lib</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -168,14 +174,16 @@
       <SDLCheck>false</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_WINDOWS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>Vfw32.lib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
       <ConformanceMode>false</ConformanceMode>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>Vfw32.lib</AdditionalDependencies>
+      <AdditionalDependencies>Vfw32.lib;opencv_world480d.lib</AdditionalDependencies>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>
@@ -191,11 +199,13 @@
   <ItemGroup>
     <ClInclude Include="CAngleInputDlg.h" />
     <ClInclude Include="ChildFrm.h" />
+    <ClInclude Include="COpenCVDlg.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="ImagePro_20190793.h" />
     <ClInclude Include="ImagePro_20190793Doc.h" />
     <ClInclude Include="ImagePro_20190793View.h" />
     <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="OnOpenCVView.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
@@ -203,10 +213,12 @@
   <ItemGroup>
     <ClCompile Include="CAngleInputDlg.cpp" />
     <ClCompile Include="ChildFrm.cpp" />
+    <ClCompile Include="COpenCVDlg.cpp" />
     <ClCompile Include="ImagePro_20190793.cpp" />
     <ClCompile Include="ImagePro_20190793Doc.cpp" />
     <ClCompile Include="ImagePro_20190793View.cpp" />
     <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="OnOpenCVView.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

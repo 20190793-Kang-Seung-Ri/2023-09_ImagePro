@@ -65,6 +65,7 @@ BEGIN_MESSAGE_MAP(CImagePro20190793View, CScrollView)
 	ON_WM_LBUTTONDOWN()
 	ON_COMMAND(ID_AVI_PRINT, &CImagePro20190793View::OnAviPrint)
 	ON_COMMAND(ID_GEOMETRY_MORPING, &CImagePro20190793View::OnGeometryMorping)
+	ON_COMMAND(ID_OPENCV_VIEW, &CImagePro20190793View::OnOpencvView)
 END_MESSAGE_MAP()
 
 // CImagePro20190793View 생성/소멸
@@ -149,6 +150,22 @@ void CImagePro20190793View::OnDraw(CDC* pDC) {
 					pDC->SetPixel(x, pDoc->imageHeight + 20 + y, RGB(pDoc->gResultImg[y][3 * x + 0], pDoc->gResultImg[y][3 * x + 1], pDoc->gResultImg[y][3 * x + 2]));
 
 		}
+	}
+
+	if (viewMode == MORPHING) {
+		for (int y = 0; y < pDoc->imageHeight; y++)       // 두번째 입력 영상 출력 
+			for (int x = 0; x < pDoc->imageWidth; x++)
+				pDC->SetPixel(x + pDoc->imageWidth * 2 + 40, y,
+					RGB(pDoc->inputImg2[y][x],
+						pDoc->inputImg2[y][x],
+						pDoc->inputImg2[y][x]));
+		for (int i = 0; i < 10; i++)
+			for (int y = 0; y < pDoc->imageHeight; y++)       // 모핑 결과 출력 
+				for (int x = 0; x < pDoc->imageWidth; x++)
+					pDC->SetPixel(x + pDoc->imageWidth + 20, y,
+						RGB(pDoc->morphedImg[i][y][x],
+							pDoc->morphedImg[i][y][x],
+							pDoc->morphedImg[i][y][x]));
 	}
 }
 
@@ -1364,6 +1381,7 @@ void CImagePro20190793View::OnGeometryAvgSampling() {
 	int x, y, i, j;
 	int src_x, src_y;
 	int sum;
+	int rsum, gsum, bsum;
 
 	int xscale = 3;
 	int yscale = 2;
@@ -1385,15 +1403,31 @@ void CImagePro20190793View::OnGeometryAvgSampling() {
 	//전방향사상
 	for (y = 0; y < pDoc->imageHeight - yscale; y += yscale)
 		for (x = 0; x < pDoc->imageWidth - xscale; x += xscale) {
-			sum = 0;
-			for (j = 0; j < yscale; j++)
-				for (i = 0; i < xscale; i++) {
-					src_x = x + i;
-					src_y = y + j;
-					sum += pDoc->inputImg[src_y][src_x];
-				}
-			pDoc->gResultImg[y / yscale][x / xscale] = sum / (xscale * yscale);
+			rsum = gsum = bsum = sum = 0;
 
+			if (pDoc->depth == 1) {
+				for (j = 0; j < yscale; j++)
+					for (i = 0; i < xscale; i++) {
+						src_x = x + i;
+						src_y = y + j;
+						sum += pDoc->inputImg[src_y][src_x];
+					}
+
+				pDoc->gResultImg[y / yscale][x / xscale] = sum / (xscale * yscale);
+			} else {
+				for (j = 0; j < yscale; j++)
+					for (i = 0; i < xscale; i++) {
+						src_x = x + i;
+						src_y = y + j;
+						rsum += pDoc->inputImg[src_y][3 * src_x + 0];
+						gsum += pDoc->inputImg[src_y][3 * src_x + 1];
+						bsum += pDoc->inputImg[src_y][3 * src_x + 2];
+					}
+
+				pDoc->gResultImg[y / yscale][3 * (x / xscale) + 0] = rsum / (xscale * yscale);
+				pDoc->gResultImg[y / yscale][3 * (x / xscale) + 1] = gsum / (xscale * yscale);
+				pDoc->gResultImg[y / yscale][3 * (x / xscale) + 2] = bsum / (xscale * yscale);
+			}
 		}
 	Invalidate();
 }
@@ -1746,4 +1780,19 @@ void CImagePro20190793View::LoadAviFile(CDC* pDC) {
 
 void CImagePro20190793View::OnGeometryMorping() {
 	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	CImagePro20190793Doc* pDoc = GetDocument();
+	ASSERT_VALID(pDoc);
+	viewMode = MORPHING;
+	pDoc->OnGeometryMorphing();
+}
+
+
+#include "COpenCVDlg.h"
+
+
+void CImagePro20190793View::OnOpencvView() {
+	// TODO: 여기에 명령 처리기 코드를 추가합니다.
+	COpenCVDlg dlg;
+
+	dlg.DoModal();
 }

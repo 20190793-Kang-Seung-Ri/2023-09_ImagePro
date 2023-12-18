@@ -13,6 +13,7 @@ protected: // serialization에서만 만들어집니다.
 	// 특성입니다.
 public:
 	CImagePro20190793Doc* GetDocument() const;
+	int viewMode;
 
 	// 작업입니다.
 public:
@@ -82,6 +83,7 @@ public:
 	afx_msg void OnAviPrint();
 	void LoadAviFile(CDC* pDC);
 	afx_msg void OnGeometryMorping();
+	afx_msg void OnOpencvView();
 };
 
 #ifndef _DEBUG  // ImagePro_20190793View.cpp의 디버그 버전

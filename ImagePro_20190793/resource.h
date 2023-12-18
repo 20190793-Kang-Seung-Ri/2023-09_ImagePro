@@ -1,6 +1,6 @@
-Ôªø//{{NO_DEPENDENCIES}}
-// Microsoft Visual C++ÏóêÏÑú ÏÉùÏÑ±Ìïú Ìè¨Ìï® ÌååÏùºÏûÖÎãàÎã§.
-// ImagePro20190793.rcÏóêÏÑú ÏÇ¨Ïö©ÎêòÍ≥† ÏûàÏäµÎãàÎã§.
+//{{NO_DEPENDENCIES}}
+// Microsoft Visual C++ø°º≠ ª˝º∫«— ∆˜«‘ ∆ƒ¿œ¿‘¥œ¥Ÿ.
+// ImagePro20190793.rcø°º≠ ªÁøÎµ«∞Ì ¿÷Ω¿¥œ¥Ÿ.
 //
 #define IDD_ABOUTBOX                    100
 #define IDP_OLE_INIT_FAILED             100
@@ -8,7 +8,12 @@
 #define IDR_ImagePro20190793TYPE        130
 #define ID_WINDOW_MANAGER               131
 #define IDD_DIALOG1                     310
+#define IDD_DIALOG2                     312
+#define IDD_DIALOG_OPENCV               313
 #define IDC_EDIT1                       1001
+#define IDC_BUTTON_FILE_SELECT          1002
+#define IDC_BUTTON_MOVIE                1003
+#define IDC_BUTTON_CAMERA               1004
 #define ID_HELLO32771                   32771
 #define ID_HELLO_INFO                   32772
 #define ID_32773                        32773
@@ -82,14 +87,17 @@
 #define ID_AVI_PRINT                    32841
 #define ID_32842                        32842
 #define ID_GEOMETRY_MORPING             32843
+#define ID_OPENCV32844                  32844
+#define ID_OPENCV_VIEW                  32845
+#define ID_OPENCV32846                  32846
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        312
-#define _APS_NEXT_COMMAND_VALUE         32844
-#define _APS_NEXT_CONTROL_VALUE         1002
+#define _APS_NEXT_RESOURCE_VALUE        315
+#define _APS_NEXT_COMMAND_VALUE         32847
+#define _APS_NEXT_CONTROL_VALUE         1005
 #define _APS_NEXT_SYMED_VALUE           310
 #endif
 #endif
