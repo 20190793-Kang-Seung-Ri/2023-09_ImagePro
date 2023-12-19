@@ -137,6 +137,22 @@ void CImagePro20190793View::OnDraw(CDC* pDC) {
 				for (x = 0; x < pDoc->imageWidth; x++)
 					pDC->SetPixel((pDoc->imageWidth + 20) * 2 + x, y, RGB(pDoc->inputImg2[y][3 * x + 0], pDoc->inputImg2[y][3 * x + 1], pDoc->inputImg2[y][3 * x + 2]));
 		}
+
+		if (viewMode == MORPHING) {
+			for (int y = 0; y < pDoc->imageHeight; y++)       // 두번째 입력 영상 출력 
+				for (int x = 0; x < pDoc->imageWidth; x++)
+					pDC->SetPixel(x + pDoc->imageWidth * 2 + 40, y,
+						RGB(pDoc->inputImg2[y][x],
+							pDoc->inputImg2[y][x],
+							pDoc->inputImg2[y][x]));
+			for (int i = 0; i < 10; i++)
+				for (int y = 0; y < pDoc->imageHeight; y++)       // 모핑 결과 출력 
+					for (int x = 0; x < pDoc->imageWidth; x++)
+						pDC->SetPixel(x + pDoc->imageWidth + 20, y,
+							RGB(pDoc->morphedImg[i][y][x],
+								pDoc->morphedImg[i][y][x],
+								pDoc->morphedImg[i][y][x]));
+		}
 	}
 
 	if (pDoc->gResultImg != NULL) {
@@ -150,22 +166,6 @@ void CImagePro20190793View::OnDraw(CDC* pDC) {
 					pDC->SetPixel(x, pDoc->imageHeight + 20 + y, RGB(pDoc->gResultImg[y][3 * x + 0], pDoc->gResultImg[y][3 * x + 1], pDoc->gResultImg[y][3 * x + 2]));
 
 		}
-	}
-
-	if (viewMode == MORPHING) {
-		for (int y = 0; y < pDoc->imageHeight; y++)       // 두번째 입력 영상 출력 
-			for (int x = 0; x < pDoc->imageWidth; x++)
-				pDC->SetPixel(x + pDoc->imageWidth * 2 + 40, y,
-					RGB(pDoc->inputImg2[y][x],
-						pDoc->inputImg2[y][x],
-						pDoc->inputImg2[y][x]));
-		for (int i = 0; i < 10; i++)
-			for (int y = 0; y < pDoc->imageHeight; y++)       // 모핑 결과 출력 
-				for (int x = 0; x < pDoc->imageWidth; x++)
-					pDC->SetPixel(x + pDoc->imageWidth + 20, y,
-						RGB(pDoc->morphedImg[i][y][x],
-							pDoc->morphedImg[i][y][x],
-							pDoc->morphedImg[i][y][x]));
 	}
 }
 
